@@ -9,9 +9,7 @@ export class TasksService {
   constructor(@InjectModel('Task') private taskModel: Model<TaskDocument>) {}
 
   async createTask(data: DataTask): Promise<boolean> {
-    console.table(data);
     const newTask: Task = await new this.taskModel(data).save();
-    console.log(`newTask: ${newTask}`);
     return true;
   }
 

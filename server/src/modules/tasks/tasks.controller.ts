@@ -17,7 +17,6 @@ export class TasksController {
 
   @Get(':id')
   async readOneTask(@Param('id') id: string) {
-    console.log(`ID: ${id}`);
     const find: Task = await this.taskService.findOneTask(id);
     return find;
   }
@@ -30,14 +29,11 @@ export class TasksController {
 
   @Put(':id')
   async updateTask(@Body() data: DataTask, @Param('id') id: string) {
-    console.log(`ID: ${id}`);
-    console.table(data);
     return data;
   }
 
   @Delete(':id')
   deleteTask(@Param('id') id: string) {
-    console.log(`ID: ${id}`);
     return `Deleted: ${id}`;
   }
 }

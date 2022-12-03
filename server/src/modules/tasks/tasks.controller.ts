@@ -13,22 +13,23 @@ import { Task } from '../../models/tasks/schemas/task.schema';
 
 @Controller('tasks')
 export class TasksController {
-  constructor(private taskService: TasksService) {}
+  constructor(private _taskService: TasksService) {}
 
   @Get(':id')
   async readOneTask(@Param('id') id: string) {
-    const find: Task = await this.taskService.findOneTask(id);
+    const find: Task = await this._taskService.findOneTask(id);
     return find;
   }
 
   @Post()
   async createTask(@Body() data: DataTask) {
-    await this.taskService.createTask(data);
+    await this._taskService.createTask(data);
     return data;
   }
 
   @Put(':id')
   async updateTask(@Body() data: DataTask, @Param('id') id: string) {
+    this._taskService.updateTask(id, data);
     return data;
   }
 

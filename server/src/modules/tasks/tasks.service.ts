@@ -13,11 +13,21 @@ export class TasksService {
     return true;
   }
 
-  updateTask(id: string) {
+  async updateTask(id: string, data: DataTask) {
+    const result = await this.taskModel.updateOne({ id }, {});
     return id;
   }
 
   async findOneTask(id: string): Promise<Task> {
     return await this.taskModel.findOne({ id }).exec();
+  }
+
+  async deleteOne(id: string) {
+    try {
+      const result = await this.taskModel.deleteOne({ id });
+    } catch (error) {
+      //
+    }
+    return;
   }
 }

@@ -3,9 +3,10 @@ export enum key {
   PREFIX = 'api',
 
   //DB
-  MYSQL_PORT = '',
-  MYSQL_HOST = '',
-  MYSQL_DB = '',
-  MYSQL_USER = '',
-  MYSQL_PASWORD = '',
+  TYPE_MYSQL = 'TYPE_MYSQL',
+  MYSQL_PORT = 'MYSQL_PORT',
+  MYSQL_HOST = 'MYSQL_HOST',
+  MYSQL_DB = 'MYSQL_DB',
+  MYSQL_USER = 'MYSQL_USER',
+  MYSQL_PASSWORD = 'MYSQL_PASSWORD',
 }

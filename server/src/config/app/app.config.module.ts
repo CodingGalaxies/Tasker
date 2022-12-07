@@ -5,6 +5,6 @@ import { AppConfigService } from './app.config.service';
 @Module({
   imports: [ConfigModule.forRoot({ envFilePath: ['app.env', 'db.env'] })],
   providers: [AppConfigService, ConfigService],
-  exports: [AppConfigService],
+  exports: [AppConfigService, ConfigService],
 })
 export class AppConfigModule {}

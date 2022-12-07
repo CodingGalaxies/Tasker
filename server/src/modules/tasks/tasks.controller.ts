@@ -3,9 +3,11 @@ import {
   Controller,
   Delete,
   Get,
+  HttpStatus,
   Param,
   Post,
   Put,
+  Response,
 } from '@nestjs/common';
 import { DataTask } from './dto/data-task.dto';
 import { TasksService } from './tasks.service';
@@ -16,15 +18,21 @@ export class TasksController {
   constructor(private _taskService: TasksService) {}
 
   @Get(':id')
-  async readOneTask(@Param('id') id: string) {
+  async readOneTask(@Param('id') id: string, @Response() res) {
     const find: Task = await this._taskService.findOneTask(id);
-    return find;
+    return res.json('').HttpStatus.OK;
+  }
+
+  @Get()
+  async readTaskAll() {
+    const task = await this._taskService.findAll();
+    return task;
   }
 
   @Post()
   async createTask(@Body() data: DataTask) {
     await this._taskService.createTask(data);
-    return data;
+    return HttpStatus.OK;
   }
 
   @Put(':id')

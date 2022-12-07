@@ -22,6 +22,10 @@ export class TasksService {
     return await this.taskModel.findOne({ id }).exec();
   }
 
+  async findAll() {
+    return await this.taskModel.find().exec();
+  }
+
   async deleteOne(id: string) {
     try {
       const result = await this.taskModel.deleteOne({ id });

@@ -18,7 +18,7 @@ export const mysqlDataSource = [
       // Add the paths to modules that use the main database here
       `${path.join(
         appRootPath.path,
-        'src',
+        __dirname,
         'models',
         'entities',
       )}/**/*.entity{.ts,.js}`,

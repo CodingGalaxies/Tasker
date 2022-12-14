@@ -1,16 +1,23 @@
-// import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { DataUser } from '../interface/user';
 
-// @Entity()
-// export class User {
-//   @PrimaryGeneratedColumn()
-//   id: number;
+@Entity({ name: 'Users' })
+export class User implements DataUser {
+  @PrimaryGeneratedColumn()
+  id: number;
 
-//   @Column()
-//   username: string;
+  @Column()
+  username: string;
 
-//   @Column()
-//   email: string;
+  @Column({ default: 'null' })
+  firstName: string;
 
-//   @Column({ default: true })
-//   password: string;
-// }
+  @Column({ default: 'null' })
+  lastName: string;
+
+  @Column()
+  email: string;
+
+  @Column()
+  password: string;
+}

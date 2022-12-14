@@ -1,15 +1,20 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Task, TaskDocument } from '../../models/tasks/schemas/task.schema';
+import { UpdateResult } from 'typeorm';
+import { Task, TaskDocument } from '../../models/schemas/task.schema';
 import { DataTask } from '../tasks/dto/data-task.dto';
 
 @Injectable()
 export class TasksService {
   constructor(@InjectModel('Task') private taskModel: Model<TaskDocument>) {}
 
+  private readonly logger = new Logger(TasksService.name);
+
   async createTask(data: DataTask): Promise<boolean> {
     const newTask: Task = await new this.taskModel(data).save();
+    this.logger.log('CREATED TASK');
+    this.logger.verbose(newTask);
     return true;
   }
 
@@ -19,19 +24,21 @@ export class TasksService {
   }
 
   async findOneTask(id: string): Promise<Task> {
-    return await this.taskModel.findOne({ id }).exec();
+    return await this.taskModel.findOne({ where: { id } }).exec();
   }
 
-  async findAll() {
+  async findAll(): Promise<Task[]> {
     return await this.taskModel.find().exec();
   }
 
   async deleteOne(id: string) {
+    let result;
     try {
-      const result = await this.taskModel.deleteOne({ id });
+      result = await this.taskModel.deleteOne({ id }).exec();
     } catch (error) {
-      //
+      this.logger.error(error);
     }
-    return;
+    this.logger.log('DELETED SUCESSFUL');
+    return result;
   }
 }

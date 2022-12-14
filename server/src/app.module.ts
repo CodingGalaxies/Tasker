@@ -1,6 +1,4 @@
 import { Module } from '@nestjs/common';
-import { TasksModule } from './modules/tasks/tasks.module';
-import { UserModule } from './modules/user/user.module';
 import { ConfigModule } from './config/config.module';
 import { AppConfigService } from './config/app/app.config.service';
 import { key } from './config/config.key';
@@ -13,10 +11,8 @@ import { CommonModule } from './common/common.module';
     AppModule,
     ConfigModule,
     ProvidersModule,
-    // TasksModule,
-    UserModule,
-    ModulesModule,
     CommonModule,
+    ModulesModule,
   ],
   controllers: [],
   providers: [],

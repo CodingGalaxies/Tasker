@@ -1,6 +1,6 @@
 export enum key {
   PORT = 'PORT',
-  PREFIX = 'api',
+  PREFIX = 'PREFIX',
 
   //DB
   TYPE_MYSQL = 'TYPE_MYSQL',

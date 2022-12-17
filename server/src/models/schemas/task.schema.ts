@@ -1,11 +1,11 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
-import { DataTask } from '../interface/task';
+import { DataTask } from '../../common/interfaces/task';
 
 @Schema()
 export class Task implements DataTask {
   @Prop()
-  public id: string;
+  public publicId: string;
 
   @Prop()
   public title: string;

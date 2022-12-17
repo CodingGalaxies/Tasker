@@ -7,10 +7,9 @@ import {
   Param,
   Post,
   Put,
-  Response,
   Logger,
 } from '@nestjs/common';
-import { DataTask } from './dto/data-task.dto';
+import { TaskDto } from './dto/data-task.dto';
 import { TasksService } from './tasks.service';
 import { Task } from '../../models/schemas/task.schema';
 
@@ -21,9 +20,10 @@ export class TasksController {
   private readonly logger = new Logger();
 
   @Get(':id')
-  async readOneTask(@Param('id') id: string, @Response() res) {
-    const task: Task = await this._taskService.findOneTask(id);
-    return res.json(task).HttpStatus.OK;
+  async readOneTask(@Param('id') id: string) {
+    console.log('ID:', id);
+    const task: Task | null = await this._taskService.findOneTask(id);
+    return task;
   }
 
   @Get()
@@ -34,15 +34,15 @@ export class TasksController {
   }
 
   @Post()
-  async createTask(@Body() data: DataTask) {
+  async createTask(@Body() data: TaskDto) {
     await this._taskService.createTask(data);
     return HttpStatus.OK;
   }
 
   @Put(':id')
-  async updateTask(@Body() data: DataTask, @Param('id') id: string) {
-    this._taskService.updateTask(id, data);
-    return data;
+  async updateTask(@Body() data: TaskDto, @Param('id') id: string) {
+    const result = await this._taskService.updateTask(id, data);
+    return result;
   }
 
   @Delete(':id')

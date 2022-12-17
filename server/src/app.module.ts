@@ -1,17 +1,28 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { TasksModule } from './modules/tasks/tasks.module';
-import { UserModule } from './modules/user/user.module';
-import { MongooseModule } from '@nestjs/mongoose';
+import { ConfigModule } from './config/config.module';
+import { AppConfigService } from './config/app/app.config.service';
+import { key } from './config/config.key';
+import { ProvidersModule } from './providers/providers.module';
+import { ModulesModule } from './modules/modules.module';
+import { CommonModule } from './common/common.module';
 
 @Module({
   imports: [
-    MongooseModule.forRoot('mongodb://localhost:27017/tasker_db'),
-    TasksModule,
-    UserModule,
+    AppModule,
+    ConfigModule,
+    ProvidersModule,
+    CommonModule,
+    ModulesModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [],
+  providers: [],
 })
-export class AppModule {}
+export class AppModule {
+  static port: number | string;
+  static prefix: string;
+
+  constructor(private readonly _appConfigSrv: AppConfigService) {
+    AppModule.port = this._appConfigSrv.get<number>(key.PORT);
+    AppModule.prefix = this._appConfigSrv.get<string>(key.PREFIX);
+  }
+}

@@ -1,23 +1,73 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Task, TaskDocument } from '../../models/tasks/schemas/task.schema';
-import { DataTask } from '../tasks/dto/data-task.dto';
+import { DataTask } from 'src/common/interfaces/task';
+import { v4 as uuidv4 } from 'uuid';
+import { Task, TaskDocument } from '../../models/schemas/task.schema';
+import { TaskDto } from '../tasks/dto/data-task.dto';
 
 @Injectable()
 export class TasksService {
   constructor(@InjectModel('Task') private taskModel: Model<TaskDocument>) {}
 
-  async createTask(data: DataTask): Promise<boolean> {
-    const newTask: Task = await new this.taskModel(data).save();
+  private readonly logger = new Logger(TasksService.name);
+
+  async createTask(data: TaskDto): Promise<boolean> {
+    //TODO: mejorar la creacion de los datos, 'FACTORY'
+    const task: DataTask = {
+      publicId: uuidv4().split('-')[0],
+      title: data.title,
+      description: data.description,
+      points: data.points,
+      assigned: data.assigned,
+      status: data.status,
+    };
+    const newTask: Task = await new this.taskModel(task).save();
+    this.logger.log('CREATED TASK');
+    this.logger.verbose(newTask);
     return true;
   }
 
-  updateTask(id: string) {
-    return id;
+  async updateTask(id: string, data: TaskDto) {
+    this.logger.log('Searching Task...');
+    const found: Task = await this.findOneTask(id);
+    if (!found)
+      return new HttpException('La tarea no existe', HttpStatus.NOT_FOUND);
+    this.logger.log('Task Exist');
+    const result = await this.taskModel
+      .findOneAndUpdate(
+        { publicId: id },
+        {
+          title: data.title,
+          description: data.description,
+          points: data.points,
+          assigned: data.assigned,
+          status: data.status,
+        },
+      )
+      .exec();
+    await result.save();
+    console.log(result);
+    return result;
   }
 
-  async findOneTask(id: string): Promise<Task> {
-    return await this.taskModel.findOne({ id }).exec();
+  async findOneTask(id: string): Promise<Task | null> {
+    const x: Task | null = await this.taskModel.findOne({ publicId: id });
+    return x;
+  }
+
+  async findAll(): Promise<Task[]> {
+    return await this.taskModel.find().exec();
+  }
+
+  async deleteOne(id: string) {
+    let result;
+    try {
+      result = await this.taskModel.deleteOne({ id }).exec();
+    } catch (error) {
+      this.logger.error(error);
+    }
+    this.logger.log('DELETED SUCESSFUL');
+    return result;
   }
 }

@@ -1,5 +1,5 @@
 export interface DataTask {
-  id: string;
+  publicId: string;
   title: string;
   description: string;
   points: string;

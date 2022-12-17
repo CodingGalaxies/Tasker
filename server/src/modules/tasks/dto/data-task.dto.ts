@@ -1,7 +1,7 @@
-export class DataTask {
-  title: string;
-  description: string;
-  points: string;
-  assigned?: string;
-  status: string;
+export class TaskDto {
+  readonly title: string;
+  readonly description: string;
+  readonly points: string;
+  readonly assigned?: string;
+  readonly status: string;
 }

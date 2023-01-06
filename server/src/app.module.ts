@@ -4,16 +4,9 @@ import { AppConfigService } from './config/app/app.config.service';
 import { key } from './config/config.key';
 import { ProvidersModule } from './providers/providers.module';
 import { ModulesModule } from './modules/modules.module';
-import { CommonModule } from './common/common.module';
 
 @Module({
-  imports: [
-    AppModule,
-    ConfigModule,
-    ProvidersModule,
-    CommonModule,
-    ModulesModule,
-  ],
+  imports: [AppModule, ConfigModule, ProvidersModule, ModulesModule],
   controllers: [],
   providers: [],
 })

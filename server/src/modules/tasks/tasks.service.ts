@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { DataTask } from 'src/common/interfaces/task';
@@ -12,7 +12,7 @@ export class TasksService {
 
   private readonly logger = new Logger(TasksService.name);
 
-  async createTask(data: TaskDto): Promise<boolean> {
+  async createTask(data: TaskDto): Promise<boolean | Task> {
     //TODO: mejorar la creacion de los datos, 'FACTORY'
     const task: DataTask = {
       publicId: uuidv4().split('-')[0],
@@ -25,16 +25,15 @@ export class TasksService {
     const newTask: Task = await new this.taskModel(task).save();
     this.logger.log('CREATED TASK');
     this.logger.verbose(newTask);
-    return true;
+    return newTask;
   }
 
-  async updateTask(id: string, data: TaskDto) {
+  async updateTask(id: string, data: TaskDto): Promise<boolean | Task> {
     this.logger.log('Searching Task...');
     const found: Task = await this.findOneTask(id);
-    if (!found)
-      return new HttpException('La tarea no existe', HttpStatus.NOT_FOUND);
+    if (!found) return false;
     this.logger.log('Task Exist');
-    const result = await this.taskModel
+    const result: Task = await this.taskModel
       .findOneAndUpdate(
         { publicId: id },
         {
@@ -46,26 +45,27 @@ export class TasksService {
         },
       )
       .exec();
-    await result.save();
-    console.log(result);
     return result;
   }
 
   async findOneTask(id: string): Promise<Task | null> {
-    const x: Task | null = await this.taskModel.findOne({ publicId: id });
-    return x;
+    return await this.taskModel.findOne({ publicId: id });
   }
 
   async findAll(): Promise<Task[]> {
     return await this.taskModel.find().exec();
   }
 
-  async deleteOne(id: string) {
+  async deleteOne(id: string): Promise<boolean | null> {
+    const found: Task | null = await this.findOneTask(id);
+    if (!found) return null;
     let result;
     try {
       result = await this.taskModel.deleteOne({ id }).exec();
     } catch (error) {
       this.logger.error(error);
+      result = false;
+      throw new Error('An error occurred while deleting the task');
     }
     this.logger.log('DELETED SUCESSFUL');
     return result;

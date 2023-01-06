@@ -1,4 +1,5 @@
 import { Task } from 'src/models/schemas/task.schema';
+import { TaskDto } from 'src/modules/tasks/dto/data-task.dto';
 
 export interface DataTask {
   publicId: string;
@@ -14,4 +15,8 @@ export interface DataResponse {
   msg?: string;
   result?: Task | boolean | null;
   tasks?: Task[];
+}
+
+export interface TaskFactory {
+  createTask(data: TaskDto): DataTask;
 }

@@ -2,7 +2,6 @@ import { Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { DataTask } from 'src/common/interfaces/task';
-import { v4 as uuidv4 } from 'uuid';
 import { Task, TaskDocument } from '../../models/schemas/task.schema';
 import { TaskDto } from '../tasks/dto/data-task.dto';
 
@@ -12,17 +11,8 @@ export class TasksService {
 
   private readonly logger = new Logger(TasksService.name);
 
-  async createTask(data: TaskDto): Promise<boolean | Task> {
-    //TODO: mejorar la creacion de los datos, 'FACTORY'
-    const task: DataTask = {
-      publicId: uuidv4().split('-')[0],
-      title: data.title,
-      description: data.description,
-      points: data.points,
-      assigned: data.assigned,
-      status: data.status,
-    };
-    const newTask: Task = await new this.taskModel(task).save();
+  async createTask(data: DataTask): Promise<boolean | Task> {
+    const newTask: Task = await new this.taskModel(data).save();
     this.logger.log('CREATED TASK');
     this.logger.verbose(newTask);
     return newTask;

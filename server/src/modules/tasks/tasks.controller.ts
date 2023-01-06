@@ -16,11 +16,15 @@ import {
 import { TaskDto } from './dto/data-task.dto';
 import { TasksService } from './tasks.service';
 import { Task } from '../../models/schemas/task.schema';
-import { DataResponse } from 'src/common/interfaces/task';
+import { DataResponse, DataTask } from 'src/common/interfaces/task';
+import { TaskFactoryImpl } from './factories/taskFactory';
 
 @Controller('tasks')
 export class TasksController {
-  constructor(private _taskService: TasksService) {}
+  constructor(
+    private _taskService: TasksService,
+    private readonly taskFactory: TaskFactoryImpl,
+  ) {}
 
   private readonly logger = new Logger();
 
@@ -52,7 +56,8 @@ export class TasksController {
   @Post()
   @HttpCode(HttpStatus.OK)
   async createTask(@Body() data: TaskDto): Promise<Task | boolean> {
-    const result: Task | boolean = await this._taskService.createTask(data);
+    const task: DataTask = this.taskFactory.createTask(data);
+    const result: Task | boolean = await this._taskService.createTask(task);
     return result;
   }
 
